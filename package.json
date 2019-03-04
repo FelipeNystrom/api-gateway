@@ -1,0 +1,20 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "a small api gateway experiment",
+  "main": "server.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon server.js",
+    "debug": "NODE_ENV=development nodemon --inspect server.js"
+  },
+  "author": "FelipeNystrom <andre.felipe.nystrom@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "helmet": "^3.15.1",
+    "http-proxy-middleware": "^0.19.1"
+  },
+  "devDependencies": {
+    "dotenv": "^6.2.0"
+  }
+}
