@@ -10,11 +10,12 @@ const userServiceEndpoints = ['/token/verify', '/create'];
 
 module.exports = server => {
   userServiceEndpoints.forEach(endpoint => {
-    server.use(userServicePath + endpoint, userProxy);
+    const path = userServicePath + endpoint;
+    server.use(path, userProxy);
   });
 
   imageServiceEndpoints.forEach(endpoint => {
-    const path = `${imageServicePath}${endpoint}`;
+    const path = imageServicePath + endpoint;
     server.use(path, tokenCheck, imageProxy);
   });
 

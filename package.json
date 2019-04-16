@@ -4,8 +4,8 @@
   "description": "a small api gateway experiment",
   "main": "server.js",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon server.js",
-    "debug": "NODE_ENV=development nodemon --inspect server.js"
+    "dev": "node server.js",
+    "debug": "nodemon --inspect server.js"
   },
   "author": "FelipeNystrom <andre.felipe.nystrom@gmail.com>",
   "license": "MIT",
@@ -17,6 +17,7 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
-    "dotenv": "^6.2.0"
+    "dotenv": "^6.2.0",
+    "nodemon": "^1.18.11"
   }
 }
