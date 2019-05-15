@@ -13,8 +13,9 @@ module.exports = async server => {
   return docker.listContainers(async (err, containers) => {
     if (err) {
       console.error(err);
+      return;
     }
-    debugger;
+
     await containers.forEach(container => {
       const {
         Labels: { serviceName, serviceRoute }
