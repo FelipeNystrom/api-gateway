@@ -1,27 +1,34 @@
 const proxy = require('express-http-proxy');
 const Docker = require('dockerode');
+const express = require('express');
 
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
+
+const isMultipartRequest = req => {
+  let contentTypeHeader = req.headers['content-type'];
+  return contentTypeHeader && contentTypeHeader.indexOf('multipart') > -1;
+};
 
 module.exports = async server => {
   return docker.listContainers(async (err, containers) => {
     if (err) {
       console.error(err);
     }
-
+    debugger;
     await containers.forEach(container => {
       const {
         Labels: { serviceName, serviceRoute }
       } = container;
+
       if (serviceName && serviceRoute) {
-        server.use(
-          serviceRoute,
-          proxy(`http://${serviceName}:3000`, {
+        server.use(serviceRoute, (req, res, next) => {
+          return proxy(`http://${serviceName}:3000`, {
+            parseReqBody: !isMultipartRequest(req),
             proxyReqPathResolver: req => {
               return `http://${serviceName}:3000${req.url}`;
             }
-          })
-        );
+          })(req, res, next);
+        });
       }
     });
   });
