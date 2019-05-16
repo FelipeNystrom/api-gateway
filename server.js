@@ -11,6 +11,7 @@ const _port = process.env.PORT || 3001;
 serverSetup(server);
 passportConfig(passport);
 serviceDiscovery(server);
+
 server.listen(_port, () => {
   console.log('server is running on ' + _port);
 });

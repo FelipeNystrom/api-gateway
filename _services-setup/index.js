@@ -27,10 +27,8 @@ module.exports = async server => {
           (req, _, next) => {
             debugger;
             if (req.originalUrl === '/auth/admin/login') {
-              debugger;
               next();
             } else {
-              debugger;
               return passport.authenticate('jwt', { session: false });
             }
           },

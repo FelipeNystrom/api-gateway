@@ -1,5 +1,7 @@
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
+const fs = require('fs');
+const path = require('path');
 const { Kafka } = require('kafkajs');
 
 const kafka = new Kafka({
@@ -10,12 +12,23 @@ const kafka = new Kafka({
 kafka.producer();
 kafka.consumer({ groupId: 'gatewayService-group' });
 
-const { PUBLIC_KEY } = process.env;
+const filePath = path.join(__dirname, '../keys/public.pem');
+
+const publicEKey = fs.readFileSync(filePath).toString('utf-8');
 
 const options = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: PUBLIC_KEY
+  secretOrKey: publicEKey
 };
+
+console.log(options);
+
+// const { PUBLIC_KEY } = process.env;
+// console.log(PUBLIC_KEY);
+// const options = {
+//   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+//   secretOrKey: PUBLIC_KEY
+// };
 
 module.exports = new JWTStrategy(options, async (jwt_payload, done) => {
   debugger;
