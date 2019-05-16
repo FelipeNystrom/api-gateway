@@ -9,31 +9,20 @@ const kafka = new Kafka({
   brokers: ['kafka:9092']
 });
 
-kafka.producer();
-kafka.consumer({ groupId: 'gatewayService-group' });
+const producer = kafka.producer();
+const consumer = kafka.consumer({ groupId: 'gatewayService-group' });
 
 const filePath = path.join(__dirname, '../keys/public.pem');
 
-const publicEKey = fs.readFileSync(filePath).toString('utf-8');
+const publicEKey = fs.readFileSync(filePath);
 
 const options = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: publicEKey
 };
 
-console.log(options);
-
-// const { PUBLIC_KEY } = process.env;
-// console.log(PUBLIC_KEY);
-// const options = {
-//   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-//   secretOrKey: PUBLIC_KEY
-// };
-
 module.exports = new JWTStrategy(options, async (jwt_payload, done) => {
-  debugger;
   try {
-    debugger;
     await producer.connect();
 
     await consumer.subscribe({ topic: 'user_auth_reply' });
@@ -43,8 +32,6 @@ module.exports = new JWTStrategy(options, async (jwt_payload, done) => {
       messages: [{ value: Buffer.from(jwt_payload.sub) }],
       acks: 1
     });
-
-    debugger;
 
     producer.disconnect();
 
@@ -59,7 +46,7 @@ module.exports = new JWTStrategy(options, async (jwt_payload, done) => {
           // }`;
 
           fetchedAuthorInfo = JSON.parse(message.value.toString('utf8'));
-          debugger;
+
           if (fetchedAuthorInfo) {
             resolve(fetchedAuthorInfo);
           } else {
@@ -75,14 +62,11 @@ module.exports = new JWTStrategy(options, async (jwt_payload, done) => {
     // req.post(authServiceRoute, { username: jwt_payload.sub });
 
     if (verified) {
-      debugger;
       done(null, verified);
     } else {
-      debugger;
       done(null, false);
     }
   } catch (error) {
-    debugger;
     done(error, false);
   }
 });

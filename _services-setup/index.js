@@ -24,20 +24,21 @@ module.exports = async server => {
       if (serviceName && serviceRoute) {
         server.use(
           serviceRoute,
-          (req, _, next) => {
-            debugger;
+          (req, res, next) => {
             if (req.originalUrl === '/auth/admin/login') {
               next();
             } else {
-              return passport.authenticate('jwt', { session: false });
+              return passport.authenticate('jwt', { session: false })(
+                req,
+                res,
+                next
+              );
             }
           },
           (req, res, next) => {
-            debugger;
             return proxy(`http://${serviceName}:3000`, {
               parseReqBody: !isMultipartRequest(req),
               proxyReqPathResolver: req => {
-                debugger;
                 return `http://${serviceName}:3000${req.url}`;
               }
             })(req, res, next);
