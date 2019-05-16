@@ -1,6 +1,6 @@
 const proxy = require('express-http-proxy');
 const Docker = require('dockerode');
-const express = require('express');
+const passport = require('passport');
 
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
@@ -22,14 +22,28 @@ module.exports = async server => {
       } = container;
 
       if (serviceName && serviceRoute) {
-        server.use(serviceRoute, (req, res, next) => {
-          return proxy(`http://${serviceName}:3000`, {
-            parseReqBody: !isMultipartRequest(req),
-            proxyReqPathResolver: req => {
-              return `http://${serviceName}:3000${req.url}`;
+        server.use(
+          serviceRoute,
+          (req, res, next) => {
+            if (req.originalUrl === '/auth/admin/login') {
+              next();
+            } else {
+              return passport.authenticate('jwt', { session: false })(
+                req,
+                res,
+                next
+              );
             }
-          })(req, res, next);
-        });
+          },
+          (req, res, next) => {
+            return proxy(`http://${serviceName}:3000`, {
+              parseReqBody: !isMultipartRequest(req),
+              proxyReqPathResolver: req => {
+                return `http://${serviceName}:3000${req.url}`;
+              }
+            })(req, res, next);
+          }
+        );
       }
     });
   });
