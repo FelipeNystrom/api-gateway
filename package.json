@@ -4,7 +4,7 @@
   "description": "a small api gateway experiment",
   "main": "server.js",
   "scripts": {
-    "dev": "node server.js",
+    "start": "node server.js",
     "debug": "nodemon --inspect server.js",
     "docker-debug": "nodemon -L --inspect=0.0.0.0 server.js"
   },
