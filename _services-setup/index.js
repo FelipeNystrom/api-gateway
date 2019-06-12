@@ -23,7 +23,7 @@ module.exports = async server => {
 
       if (serviceName && serviceRoute) {
         server.use(
-          serviceRoute,
+          `/${serviceRoute}`,
           (req, res, next) => {
             if (req.originalUrl === '/auth/admin/login') {
               next();
