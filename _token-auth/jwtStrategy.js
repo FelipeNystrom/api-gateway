@@ -9,16 +9,14 @@ const kafka = new Kafka({
   brokers: ['kafka:9092']
 });
 
+const { PUBLIC_KEY } = process.env;
+
 const producer = kafka.producer();
 const consumer = kafka.consumer({ groupId: 'gatewayService-group' });
 
-const filePath = path.join(__dirname, '../keys/public.pem');
-
-const publicEKey = fs.readFileSync(filePath);
-
 const options = {
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey: publicEKey
+  secretOrKey: PUBLIC_KEY
 };
 
 module.exports = new JWTStrategy(options, async (jwt_payload, done) => {
