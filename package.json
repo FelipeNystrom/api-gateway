@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "dockerode": "^2.5.8",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-http-proxy": "^1.5.1",
     "helmet": "^3.15.1",
     "kafkajs": "^1.7.0",
